@@ -999,12 +999,30 @@
 
         /* --- PRIVACY PROTECTION SCRIPT --- */
 
-        /* --- PRIVACY PROTECTION SCRIPT --- */
-
         // 1. Disable Interactions
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.querySelectorAll('img').forEach(img => {
+            img.style.webkitTouchCallout = 'none'; // Essential for mobile iOS deterrent
             img.addEventListener('dragstart', event => event.preventDefault());
+
+            // --- MOBILE TOUCH-LOCK ---
+            // Reveal only while holding. If user lets go to press hardware buttons, it blurs instantly.
+            img.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    img.style.filter = 'none';
+                    img.style.transition = 'none';
+                } else {
+                    setContentProtection(true, true);
+                }
+            }, { passive: true });
+
+            const reBlur = () => {
+                img.style.filter = 'blur(10px) grayscale(100%)';
+                img.style.transition = 'none';
+            };
+
+            img.addEventListener('touchend', reBlur);
+            img.addEventListener('touchcancel', reBlur);
         });
 
         // 2. Global Protection Orchestrator
@@ -1013,29 +1031,29 @@
             const watermark = document.getElementById('watermark-layer');
             const protectedElements = document.querySelectorAll('nav, header, section, footer');
 
-            // Use requestAnimationFrame for fastest possible UI response
             requestAnimationFrame(() => {
                 if (enable) {
                     overlay.style.display = 'flex';
                     watermark.style.display = 'block';
                     protectedElements.forEach(el => {
                         el.style.transition = instant ? 'none' : 'filter 0.3s ease-out';
-                        el.style.filter = 'blur(30px) grayscale(100%) brightness(0.5)';
+                        el.style.filter = 'blur(35px) grayscale(100%) brightness(0.4)';
                     });
                     initWatermarks();
                 } else {
-                    overlay.style.display = 'none';
-                    watermark.style.display = 'none';
-                    protectedElements.forEach(el => {
-                        el.style.filter = 'none';
-                    });
+                    if (document.hasFocus() || !instant) {
+                        overlay.style.display = 'none';
+                        watermark.style.display = 'none';
+                        protectedElements.forEach(el => {
+                            el.style.filter = 'none';
+                        });
+                    }
                 }
             });
         }
 
-        // 3. Shortcuts (keydown for instant reaction)
+        // 3. Shortcuts & Gesture Blocks
         document.addEventListener('keydown', function (e) {
-            // Block Inspection keys silently (no alert to block thread)
             if (e.key === 'F12' ||
                 (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
                 (e.ctrlKey && e.key.toUpperCase() === 'U')) {
@@ -1043,7 +1061,6 @@
                 return false;
             }
 
-            // Capture/Snip Detected
             if (e.key === 'PrintScreen' ||
                 (e.metaKey && e.shiftKey && ['S', '3', '4'].includes(e.key.toLowerCase()))) {
                 setContentProtection(true, true);
@@ -1051,29 +1068,35 @@
             }
         });
 
-        // 4. Focus & Visibility (The main Snipping Tool deterrent)
+        // Block multi-finger gestures (often used for screenshots)
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                setContentProtection(true, true);
+            }
+        }, { passive: true });
+
+        // 4. Focus & Visibility (OS Detection)
         window.addEventListener('blur', () => setContentProtection(true, true));
         window.addEventListener('focus', () => setContentProtection(false));
         document.addEventListener('visibilitychange', () => {
             setContentProtection(document.hidden, true);
         });
 
-        // 5. Watermark System (Adds "noise" to prevent clean captures)
+        // 5. Watermark System
         function initWatermarks() {
             const container = document.getElementById('watermark-layer');
             container.innerHTML = '';
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 15; i++) {
                 const wm = document.createElement('div');
                 wm.className = 'watermark-text';
-                wm.innerText = 'PROTECTED_CONTENT_ID:JH_03';
+                wm.innerText = 'SECURE_ID:RT_MATURI';
                 wm.style.top = Math.random() * 100 + '%';
                 wm.style.left = Math.random() * 100 + '%';
-                wm.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                wm.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
                 container.appendChild(wm);
             }
         }
     </script>
 </body>
-
 
 </html>
