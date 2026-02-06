@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ram Tej Maturi | AI & ML Explorer</title>
+
+    <!-- Bootstrap 5 for Device Adaptation -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fonts: DotGothic16 for the Nothing LED Dot-Matrix look -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter:wght@300;400;700;900&family=Bungee&family=VT323&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --nothing-red: #ff0031;
+            --nothing-black: #000000;
+            --nothing-white: #ffffff;
+            --comic-border: 4px solid black;
+            /* Nothing LED Dot-Matrix Font Style */
+            --nothing-font: 'DotGothic16', sans-serif;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            color: var(--nothing-black);
+            overflow-x: hidden;
+            /* Nothing OS Dot Grid Background */
+            background-image: radial-gradient(var(--nothing-black) 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+
+        /* --- PRIVACY & PROTECTION STYLES --- */
+        /* 1. Disable Text Selection Globally */
+        body {
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10 and IE 11 */
+            user-select: none;
+            /* Standard syntax */
+        }
+
+        /* 2. Prevent Image Dragging & Saving */
+        img {
+            -webkit-user-drag: none;
+            /* Prevents dragging in WebKit (Chrome, Safari, Edge) */
+            -webkit-touch-callout: none;
+            /* Disables the long-press "Save Image" menu on iOS */
+            user-select: none;
+            /* Prevents image highlighting/selection */
+            /* Note: hover effects are still allowed as pointer-events defaults to 'auto' */
+        }
+
+        /* 3. Anti-Screenshot Overlay (Hidden by default) */
+        #privacy-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 2147483647;
+            /* Maximum possible z-index to stay on top */
+            color: var(--nothing-red);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--nothing-font);
+            font-size: 3rem;
+            text-align: center;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        /* Moving Watermark Deterrent */
+        #watermark-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483646;
+            pointer-events: none;
+            display: none;
+            overflow: hidden;
+        }
+
+        .watermark-text {
+            position: absolute;
+            font-family: var(--nothing-font);
+            color: rgba(255, 0, 49, 0.1);
+            font-size: 1.5rem;
+            white-space: nowrap;
+            user-select: none;
+            font-weight: 900;
+        }
+
+        /* Default-Blur for Images (Proactive protection) */
+        img:not(.no-protect) {
+            filter: blur(10px) grayscale(100%);
+            transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: help;
+        }
+
+        img:not(.no-protect):hover {
+            filter: blur(0px) grayscale(0%);
+        }
+
+        /* LED Dot Matrix Global Style */
+        .dot-matrix {
+            font-family: var(--nothing-font);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comic-panel {
+            background: white;
+            border: var(--comic-border);
+            box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .comic-panel:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 14px 14px 0px 0px var(--nothing-red);
+        }
+
+        .halftone {
+            background-image: radial-gradient(rgba(0, 0, 0, 0.1) 15%, transparent 16%);
+            background-size: 8px 8px;
+        }
+
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            border: 4px solid #000;
+            padding: 20px;
+            border-radius: 25px;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 40px;
+            border-width: 25px 25px 0;
+            border-style: solid;
+            border-color: #000 transparent;
+            display: block;
+            width: 0;
+        }
+
+        .nothing-pill {
+            background: black;
+            color: white;
+            border-radius: 50px;
+            padding: 4px 14px;
+            font-size: 0.75rem;
+            display: inline-block;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: var(--nothing-font);
+        }
+
+        .nothing-red-dot {
+            height: 12px;
+            width: 12px;
+            background-color: var(--nothing-red);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.3);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* --- UPDATED HERO IMAGE STYLE --- */
+        .hero-img-container {
+            border: 6px solid black;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+
+        /* The Magic Comic Filter */
+        .comic-filter {
+            filter: url(#ink-wash) grayscale(100%) contrast(120%);
+            /* Fallback if SVG fails */
+            mix-blend-mode: normal;
+        }
+
+        /* Halftone Overlay Pattern */
+        .comic-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, #000 1.5px, transparent 2px);
+            background-size: 6px 6px;
+            opacity: 0.15;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            z-index: 10;
+        }
+
+        .glitch-text {
+            font-family: 'Bungee', cursive;
+        }
+
+        .year-stamp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: var(--nothing-font);
+            background: var(--nothing-red);
+            color: white;
+            padding: 2px 8px;
+            font-weight: bold;
+            transform: rotate(5deg);
+            z-index: 10;
+        }
+
+        /* Form Styling to match Nothing OS */
+        .nothing-input {
+            border: 3px solid black;
+            background: white;
+            padding: 12px;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .nothing-input:focus {
+            border-color: var(--nothing-red);
+        }
+
+        .nothing-label {
+            font-family: var(--nothing-font);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Bootstrap grid adjustments for comic style */
+        .row-comic {
+            margin-bottom: 2rem;
+        }
+
+        /* --- BUG FIXES START --- */
+
+        /* Fix 1: Global Navbar Z-Index & Positioning
+           Ensures the navbar is fixed at the top and covers content when scrolling.
+        */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background-color: #f0f0f0;
+            /* Match body background */
+            border-bottom: 4px solid black;
+            /* Comic border for separation */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+        }
+
+        /* Fix 2: Tailwind/Bootstrap Conflict
+           Tailwind sets 'visibility: collapse' which breaks Bootstrap animations.
+           We force it to 'visible' so Bootstrap's display:none/block works correctly.
+        */
+        .collapse,
+        .collapsing {
+            visibility: visible !important;
+        }
+
+        /* Fix 3: Scroll Padding & Body Spacing
+           Prevents navbar from overlapping content when clicking links.
+           Increased to 150px to ensure clearance.
+        */
+        html {
+            scroll-padding-top: 150px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            padding-top: 120px;
+            /* Push content down so it's not hidden behind fixed nav */
+        }
+
+        /* Scroll to Top Button Style */
+        #scrollTopBtn {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            border: 4px solid black;
+            background-color: var(--nothing-red);
+            color: white;
+            font-family: var(--nothing-font);
+            font-weight: bold;
+            font-size: 1.25rem;
+            padding: 10px 15px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px 0px black;
+            transition: all 0.2s;
+        }
+
+        #scrollTopBtn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px black;
+        }
+
+        /* Custom Mobile Menu Styling */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: white;
+                border: 4px solid black;
+                padding: 20px;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                /* High Z-Index for the dropdown itself */
+                z-index: 10000;
+                box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+            }
+        }
+
+        /* --- BUG FIXES END --- */
+    </style>
+</head>
+
+<body class="container">
+
+    <!-- PRIVACY OVERLAY (Shown via JS on focus loss / screenshot attempt) -->
+    <div id="privacy-overlay">
+        <div class="glitch-text text-6xl text-[var(--nothing-red)] mb-4">SYSTEM_LOCKED</div>
+        <div class="dot-matrix text-xl text-white">SCREEN_CAPTURE_DETECTED.DLL</div>
+    </div>
+    <div id="watermark-layer"></div>
+
+    <!-- INVISIBLE SVG FILTER DEFINITION -->
+    <svg style="display: none;">
+        <defs>
+            <filter id="ink-wash">
+                <feColorMatrix type="saturation" values="0" />
+                <feComponentTransfer>
+                    <!-- Adjusting gamma for high contrast comic look -->
+                    <feFuncR type="gamma" amplitude="1" exponent="0.5" offset="0" />
+                    <feFuncG type="gamma" amplitude="1" exponent="0.5" offset="0" />
+                    <feFuncB type="gamma" amplitude="1" exponent="0.5" offset="0" />
+                </feComponentTransfer>
+                <!-- Thresholding to create stark black/white -->
+                <feComponentTransfer>
+                    <feFuncR type="discrete" tableValues="0 0.8 1" />
+                    <feFuncG type="discrete" tableValues="0 0.8 1" />
+                    <feFuncB type="discrete" tableValues="0 0.8 1" />
+                </feComponentTransfer>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container relative">
+            <a class="navbar-brand dot-matrix text-3xl font-bold flex items-center" href="#">
+                <span class="nothing-red-dot"></span> RAM TEJ MATURI
+            </a>
+            <button class="navbar-toggler border-black" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-lg-4 text-center mt-3 mt-lg-0">
+                    <li class="nav-item">
+                        <a href="#work"
+                            class="nav-link dot-matrix text-sm font-bold tracking-widest hover:text-[var(--nothing-red)]">PROJECTS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#skills"
+                            class="nav-link dot-matrix text-sm font-bold tracking-widest hover:text-[var(--nothing-red)]">STACK</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#experience"
+                            class="nav-link dot-matrix text-sm font-bold tracking-widest hover:text-[var(--nothing-red)]">EXP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#additional-info"
+                            class="nav-link dot-matrix text-sm font-bold tracking-widest hover:text-[var(--nothing-red)]">EXTRA-CURR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact-section"
+                            class="nav-link dot-matrix text-sm font-bold tracking-widest hover:text-[var(--nothing-red)]">CONTACT</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <button id="scrollTopBtn" title="Go to top">TOP_▲</button>
+
+    <!-- HERO SECTION -->
+    <header class="row g-4 mb-5">
+        <div class="col-lg-4">
+            <div class="comic-panel p-2 bg-black h-100 min-h-[400px]">
+                <div class="hero-img-container h-100 flex items-center justify-center relative">
+                    <!-- Overlay for comic dots -->
+                    <div class="comic-overlay"></div>
+                    <!-- 
+                        IMPORTANT: 
+                        1. Make sure 'IMG_20260203_200721.jpg' is in your project folder.
+                        2. The 'comic-filter' class automatically converts it to black & white comic style.
+                    -->
+                    <img id="profile-img" src="IMG_20260203_200721.jpg"
+                        onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'600\' viewBox=\'0 0 600 600\'%3e%3crect width=\'600\' height=\'600\' fill=\'#cccccc\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-family=\'monospace\' font-weight=\'bold\' font-size=\'40\' text-anchor=\'middle\' dy=\'.3em\' fill=\'#333333\'%3eUPLOAD IMG%3c/text%3e%3c/svg%3e'"
+                        alt="Ram Tej Maturi"
+                        class="object-cover w-full h-full comic-filter transition-all duration-700 hover:filter-none">
+
+                    <div class="absolute bottom-4 left-4 nothing-pill bg-white text-black border-2 border-black z-20">
+                        IMG_TYPE: INK_WASH</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="comic-panel p-4 p-md-5 h-100 flex flex-col justify-center halftone">
+                <div class="speech-bubble mb-5">
+                    <!-- Changed from glitch-text to dot-matrix -->
+                    <h1 class="dot-matrix text-4xl md:text-7xl mb-3 leading-none font-bold">I CODE <span
+                            class="text-[var(--nothing-red)]">INTELLIGENCE</span></h1>
+                    <p class="text-xl font-medium leading-relaxed">
+                        3rd-year B-Tech CSE (AI & ML) at SRM AP University. Focused on spatial modeling, deep learning,
+                        and
+                        building software that solves real-world puzzles.
+                    </p>
+                    <!-- Metadata row added without changing the UI layout -->
+                    <div
+                        class="mt-4 pt-4 border-t border-black/10 dot-matrix text-xs opacity-60 flex flex-wrap gap-x-6 gap-y-2">
+                        <span>University: SRM AP</span>
+                        <span>CGPA: 8.10/10.0</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap align-items-center gap-4">
+                    <a href="#contact-section"
+                        class="nothing-pill px-10 py-4 bg-black text-lg text-white no-underline hover:bg-[var(--nothing-red)] transition-all transform hover:scale-105">CONTACT_ME.SH</a>
+
+                    <!-- DOWNLOAD RESUME BUTTON -->
+                    <a href="RamTej_Resume.pdf" download="RamTej_Resume.pdf"
+                        class="nothing-pill px-10 py-4 bg-white text-black border-2 border-black text-lg no-underline hover:bg-black hover:text-white transition-all transform hover:scale-105 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-download" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                            <path
+                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                        </svg>
+                        DOWNLOAD_RESUME
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- POW STATS -->
+    <section class="row g-4 mb-5">
+        <div class="col-6 col-md-3">
+            <div
+                class="comic-panel p-3 p-md-4 bg-[var(--nothing-red)] text-white text-center h-100 transform -rotate-1">
+                <!-- Adjusted font sizes: 2xl mobile, 4xl tablet, 5xl desktop -->
+                <div class="glitch-text text-2xl md:text-4xl lg:text-5xl">TOP 10</div>
+                <div class="dot-matrix text-xs mt-2 font-bold text-black">NATIONAL HACKATHON</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="comic-panel p-3 p-md-4 bg-white text-center h-100 transform rotate-2">
+                <div class="glitch-text text-2xl md:text-4xl lg:text-5xl">93.3%</div>
+                <div class="dot-matrix text-xs mt-2 font-bold">INTERMEDIATE</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="comic-panel p-3 p-md-4 bg-black text-white text-center h-100 transform -rotate-2">
+                <div class="glitch-text text-2xl md:text-4xl lg:text-5xl text-[var(--nothing-red)]">10.0</div>
+                <div class="dot-matrix text-xs mt-2 font-bold uppercase">10th GRADE</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="comic-panel p-3 p-md-4 bg-white text-center h-100 transform rotate-1">
+                <div class="glitch-text text-2xl md:text-4xl lg:text-5xl italic">8+</div>
+                <div class="dot-matrix text-xs mt-2 font-bold uppercase">MAJOR PROJECTS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION WRAPPER - Fixed ID Placement -->
+    <section id="work" class="mb-5">
+        <div class="mb-4 d-flex align-items-center gap-4">
+            <h2 class="dot-matrix text-4xl md:text-5xl font-black">PROJECT_ARCHIVE</h2>
+            <div class="h-1 flex-grow bg-black"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Project 1: SDM (Featured) -->
+            <div class="col-12 col-lg-8">
+                <div class="comic-panel group bg-gray-50 h-100">
+                    <div class="year-stamp">2025</div>
+                    <div class="p-4 p-md-5">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div class="nothing-pill">INTERNSHIP PROJECT</div>
+                            <div class="text-xs font-bold dot-matrix d-none d-md-block">TECH: R / MAXENT</div>
+                        </div>
+                        <h3
+                            class="glitch-text text-3xl md:text-4xl mb-4 group-hover:text-[var(--nothing-red)] transition-colors">
+                            SPECIES DISTRIBUTION MODEL</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Predicted potential distribution of species under current and future climate scenarios using
+                            MaxEnt. Performed spatial data preprocessing and analysis to support drone technology
+                            objectives.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <span class="nothing-pill bg-gray-200 text-black">SPATIAL ANALYSIS</span>
+                            <span class="nothing-pill bg-gray-200 text-black">CLIMATE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Crop Recommendation -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel group h-100">
+                    <div class="year-stamp">2024</div>
+                    <div class="p-4">
+                        <div class="nothing-pill mb-4">MACHINE LEARNING</div>
+                        <h3 class="glitch-text text-2xl mb-3">CROP RECOMMENDATION</h3>
+                        <p class="text-sm mb-4 text-gray-600">Recommending crops based on soil nutrients and climate
+                            using Random Forest and SVM.</p>
+                        <div class="text-xs font-bold uppercase tracking-tighter dot-matrix text-gray-500">PYTHON,
+                            SKLEARN</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3: Aura Music -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel group bg-black text-white h-100">
+                    <div class="year-stamp">2025</div>
+                    <div class="p-4">
+                        <div class="nothing-pill bg-white text-black mb-4">FRONTEND</div>
+                        <h3 class="glitch-text text-2xl mb-3">AURA MUSIC PLAYER</h3>
+                        <p class="text-sm mb-4 opacity-75">React.js player with playlist management and mock REST API
+                            simulation.</p>
+                        <div class="text-xs font-bold dot-matrix text-[var(--nothing-red)]">REACT.JS, DB.JSON</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 4: Bug RCA -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel p-4 border-dashed h-100">
+                    <div class="year-stamp">2025</div>
+                    <div class="nothing-pill mb-4">AI AGENT</div>
+                    <h3 class="glitch-text text-xl mb-2">BUG RCA ASSISTANT</h3>
+                    <p class="text-xs mb-4">AI tool to extract/translate Japanese comments and generate summaries using
+                        LLMs.</p>
+                    <div class="text-[10px] font-bold dot-matrix">PYTHON, GEMINI API</div>
+                </div>
+            </div>
+
+            <!-- Additional Projects Grid -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel p-4 h-100">
+                    <div class="year-stamp">2024</div>
+                    <div class="nothing-pill mb-4">COMPUTER VISION</div>
+                    <h3 class="glitch-text text-xl mb-2">EMOTION RECOGNITION</h3>
+                    <p class="text-xs mb-4 text-gray-600">CNN-based model classifying expressions into emotion
+                        categories.</p>
+                    <div class="text-[10px] font-bold dot-matrix">PYTHON, CNN</div>
+                </div>
+            </div>
+
+            <!-- YouTube Relevancy -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel p-4 bg-[var(--nothing-red)] text-white h-100">
+                    <div class="year-stamp bg-black">2024</div>
+                    <div class="nothing-pill bg-black mb-4">DATA SCIENCE</div>
+                    <h3 class="glitch-text text-xl mb-2">YT RELEVANCY CHECK</h3>
+                    <p class="text-xs mb-4">Evaluating title-transcript alignment using supervised learning.</p>
+                    <div class="text-[10px] font-bold text-black dot-matrix">PYTHON, YT API</div>
+                </div>
+            </div>
+
+            <!-- Project 7: 2D Game -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel p-4 halftone h-100">
+                    <div class="year-stamp">2023</div>
+                    <div class="nothing-pill mb-4">GAME DEV</div>
+                    <h3 class="glitch-text text-xl mb-2">PYGAME 2D WORLD</h3>
+                    <p class="text-xs mb-4">Interactive 2D game environment using Pygame and NumPy.</p>
+                    <div class="text-[10px] font-bold dot-matrix">PYTHON, NUMPY</div>
+                </div>
+            </div>
+
+            <!-- Project 8: Library DB -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="comic-panel p-4 h-100">
+                    <div class="year-stamp">2023</div>
+                    <div class="nothing-pill mb-4">DATABASE</div>
+                    <h3 class="glitch-text text-xl mb-2">LIBRARY MGMT SYSTEM</h3>
+                    <p class="text-xs mb-4">Database architecture for library resource search and member management.</p>
+                    <div class="text-[10px] font-bold dot-matrix">SQL, DBMS</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section class="mb-5" id="skills">
+        <div class="comic-panel p-4 p-md-5 halftone relative">
+            <div class="absolute top-0 right-10 bg-black text-white px-4 py-1 dot-matrix text-xs">SYSTEM_CAPABILITIES
+            </div>
+            <h2 class="dot-matrix text-4xl mb-5 border-b-4 border-black d-inline-block">TECH_STACK.EXE</h2>
+
+            <div class="row g-4">
+                <!-- Programming -->
+                <div class="col-md-6">
+                    <h4 class="dot-matrix text-xl mb-3 text-[var(--nothing-red)]">PROGRAMMING_LANGUAGES</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">C</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">C++</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">R</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">PYTHON</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">JAVA</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">DSA</span>
+                    </div>
+                </div>
+
+                <!-- Domains -->
+                <div class="col-md-6">
+                    <h4 class="dot-matrix text-xl mb-3 text-[var(--nothing-red)]">DOMAINS</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">MACHINE
+                            LEARNING</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">DEEP
+                            LEARNING</span>
+                    </div>
+                </div>
+
+                <!-- Database -->
+                <div class="col-md-6">
+                    <h4 class="dot-matrix text-xl mb-3 text-[var(--nothing-red)]">DATABASE_MGMT</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">SQL</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">DBMS</span>
+                    </div>
+                </div>
+
+                <!-- Web Dev -->
+                <div class="col-md-6">
+                    <h4 class="dot-matrix text-xl mb-3 text-[var(--nothing-red)]">WEB_DEV</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">HTML</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">CSS</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">JAVASCRIPT</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">REACT.JS</span>
+                    </div>
+                </div>
+
+                <!-- Soft Skills -->
+                <div class="col-12">
+                    <h4 class="dot-matrix text-xl mb-3 text-[var(--nothing-red)]">SOFT_SKILLS_MODULE</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">COLLABORATION</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">LEADERSHIP</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">PUBLIC
+                            SPEAKING</span>
+                        <span
+                            class="comic-panel px-3 py-1 font-bold text-sm hover:bg-black hover:text-white transition-all m-0">PROBLEM-SOLVING</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE SECTION -->
+    <section class="mb-5" id="experience">
+        <div class="mb-4 d-flex align-items-center gap-4">
+            <h2 class="dot-matrix text-4xl md:text-5xl font-black">EXPERIENCE.LOG</h2>
+            <div class="h-1 flex-grow bg-black"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Internship -->
+            <div class="col-12">
+                <div class="comic-panel p-4 p-md-5 position-relative">
+                    <div class="year-stamp">MAY-JUL 25</div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 border-end-md border-black">
+                            <h3 class="glitch-text text-2xl mb-2">DRONE TECH</h3>
+                            <div class="dot-matrix text-sm font-bold text-[var(--nothing-red)] mb-2">SRM UNIVERSITY
+                            </div>
+                            <span class="nothing-pill bg-black text-white">INTERNSHIP</span>
+                        </div>
+                        <div class="col-md-8 pt-3 pt-md-0 ps-md-4">
+                            <h4 class="font-bold mb-3 dot-matrix">SPECIES DISTRIBUTION MODELING</h4>
+                            <ul class="list-unstyled space-y-2 text-sm md:text-base">
+                                <li class="d-flex align-items-start gap-2">
+                                    <span class="text-[var(--nothing-red)] font-bold">></span>
+                                    <span>Worked on remote sensing-based species distribution modeling (SDM) using
+                                        MaxEnt & climate data.</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <span class="text-[var(--nothing-red)] font-bold">></span>
+                                    <span>Conducted spatial data preprocessing and analysis, producing actionable
+                                        insights.</span>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <span class="text-[var(--nothing-red)] font-bold">></span>
+                                    <span>Created thematic maps using ArcMap.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hackathon 1 -->
+            <div class="col-md-6">
+                <div class="comic-panel p-4 h-100 position-relative">
+                    <div class="year-stamp bg-black">2025</div>
+                    <div class="nothing-pill bg-[var(--nothing-red)] mb-3">TOP 10 RANK</div>
+                    <h3 class="glitch-text text-xl mb-1">REPO REBOOT</h3>
+                    <div class="dot-matrix text-xs font-bold mb-3">I.FEST DA-IICT</div>
+                    <ul class="list-unstyled space-y-2 text-sm">
+                        <li class="d-flex align-items-start gap-2">
+                            <span class="font-bold">></span>
+                            <span>Secured Top 10 in 48-hour national hackathon.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <span class="font-bold">></span>
+                            <span>Developed prototype for Rupiya.app with strong pitching.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <span class="font-bold">></span>
+                            <span>Improved team collaboration & time management.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Hackathon 2 -->
+            <div class="col-md-6">
+                <div class="comic-panel p-4 h-100 position-relative">
+                    <div class="year-stamp bg-white text-black border border-black">2025</div>
+                    <div class="nothing-pill bg-white text-black border border-black mb-3">PARTICIPANT</div>
+                    <h3 class="glitch-text text-xl mb-1">HACK MSC 2.0</h3>
+                    <div class="dot-matrix text-xs font-bold mb-3">NATIONAL LEVEL</div>
+                    <p class="text-sm">Participated in a national-level Hackathon, developing and presenting a project
+                        idea to industry experts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: EXTRAS.DLL (Co-curricular, Certifications, Languages) -->
+    <section class="mb-5" id="additional-info">
+        <div class="mb-4 d-flex align-items-center gap-4">
+            <h2 class="dot-matrix text-4xl md:text-5xl font-black">EXTRAS.DLL</h2>
+            <div class="h-1 flex-grow bg-black"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Co-curricular Activities -->
+            <div class="col-md-6">
+                <div class="comic-panel p-4 h-100">
+                    <h3 class="glitch-text text-2xl mb-4 text-[var(--nothing-red)]">CO-CURRICULAR</h3>
+                    <ul class="list-unstyled space-y-3">
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="nothing-red-dot mt-1.5 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-bold block">History & Heritage Club</span>
+                                <span class="text-sm text-gray-600">Convenor (President) – Led events & improved
+                                    engagement.</span>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="nothing-red-dot mt-1.5 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-bold block">Public Speaking</span>
+                                <span class="text-sm text-gray-600">Delivered seminars & enhanced event management
+                                    skills.</span>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-start gap-3">
+                            <div class="nothing-red-dot mt-1.5 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-bold block">Chess Competition</span>
+                                <span class="text-sm text-gray-600">Secured 1st Prize at school level.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="col-md-6">
+                <div class="comic-panel p-4 h-100 bg-black text-white">
+                    <h3 class="glitch-text text-2xl mb-4">CERTIFICATIONS</h3>
+                    <div class="space-y-4">
+                        <div class="border border-white/30 p-3 rounded bg-white/5">
+                            <div class="nothing-pill bg-white text-black text-[10px] mb-1">MICROSOFT & LINKEDIN</div>
+                            <div class="font-bold dot-matrix">CAREER ESSENTIALS IN GEN AI</div>
+                        </div>
+                        <div class="border border-white/30 p-3 rounded bg-white/5">
+                            <div class="nothing-pill bg-[var(--nothing-red)] text-white text-[10px] mb-1">ORACLE</div>
+                            <div class="font-bold dot-matrix">AI CERTIFIED FOUNDATIONS ASSOCIATE</div>
+                        </div>
+                        <div class="border border-white/30 p-3 rounded bg-white/5">
+                            <div class="nothing-pill bg-white text-black text-[10px] mb-1">HACKERRANK</div>
+                            <div class="font-bold dot-matrix">PYTHON CERTIFICATE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="col-12">
+                <div class="comic-panel p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 border-end-md border-black mb-3 mb-md-0">
+                            <h3 class="glitch-text text-2xl">LANGUAGES</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="d-flex flex-wrap gap-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="comic-panel m-0 px-3 py-1 font-bold">TELUGU</span>
+                                    <span class="dot-matrix text-xs">/// NATIVE</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="comic-panel m-0 px-3 py-1 font-bold">ENGLISH</span>
+                                    <span class="dot-matrix text-xs">/// FLUENT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM SECTION -->
+    <section class="row g-4 mb-5" id="contact-section">
+        <div class="col-12">
+            <div class="comic-panel p-4 p-md-5">
+                <h2 class="dot-matrix text-4xl mb-4 text-[var(--nothing-red)]">LET'S_CONNECT.LOG</h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <p class="mb-4 font-bold text-lg">HAVE A QUESTION OR WANT TO COLLABORATE? SEND A MESSAGE THROUGH
+                            THE SYSTEM.</p>
+                        <div class="dot-matrix space-y-2 opacity-70">
+                            <p>MAIL: RAMTEJMATURI2005@GMAIL.COM</p>
+                            <p>TEL: +91 9347471559</p>
+                            <p>LOC: VIJAYAWADA, INDIA</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <form id="portfolio-form" class="space-y-4" action="https://api.web3forms.com/submit"
+                            method="POST">
+                            <!-- Web3Forms Access Key -->
+                            <input type="hidden" name="access_key" value="5e3aea40-d1a4-4597-a098-e2347597dda0" />
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="nothing-label">USER_NAME</label>
+                                    <input type="text" name="name" class="nothing-input" placeholder="Enter Name..."
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="nothing-label">USER_EMAIL</label>
+                                    <input type="email" name="email" class="nothing-input" placeholder="Enter Email..."
+                                        required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="nothing-label">MESSAGE_CONTENT</label>
+                                    <textarea name="message" class="nothing-input" rows="4"
+                                        placeholder="How can I help you?" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit"
+                                        class="nothing-pill bg-black text-white px-8 py-3 text-lg border-2 border-black hover:bg-[var(--nothing-red)] transition-all w-full md:w-auto">
+                                        SEND_PACKET.SH
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="comic-panel bg-black text-white p-5 text-center mb-5">
+        <div class="glitch-text text-5xl md:text-7xl mb-4">SAY_HELLO</div>
+        <div class="d-flex justify-content-center gap-4 mb-4">
+            <a href="https://github.com/ramtej999"
+                class="nothing-pill bg-white text-black px-4 py-2 no-underline hover:bg-[var(--nothing-red)] hover:text-white transition-all">GITHUB</a>
+            <a href="https://linkedin.com/in/ramtej-maturi"
+                class="nothing-pill bg-white text-black px-4 py-2 no-underline hover:bg-[var(--nothing-red)] hover:text-white transition-all">LINKEDIN</a>
+        </div>
+        <div class="text-[10px] font-bold uppercase tracking-[0.5em] opacity-40 dot-matrix">
+            © 2026 RAM TEJ MATURI // VER: 2.0_JOURNEY_ENABLED
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Scroll Reveal Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.comic-panel').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            observer.observe(el);
+        });
+
+        /* REMOVED: The previous 'portfolio-form' event listener that used e.preventDefault() 
+           has been deleted to allow the actual API submission to work.
+        */
+
+        // Scroll To Top Logic
+        const scrollBtn = document.getElementById('scrollTopBtn');
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollBtn.style.display = "block";
+            } else {
+                scrollBtn.style.display = "none";
+            }
+        };
+
+        scrollBtn.onclick = function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        /* --- PRIVACY PROTECTION SCRIPT --- */
+
+        /* --- PRIVACY PROTECTION SCRIPT --- */
+
+        // 1. Disable Interactions
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('dragstart', event => event.preventDefault());
+        });
+
+        // 2. Global Protection Orchestrator
+        function setContentProtection(enable, instant = false) {
+            const overlay = document.getElementById('privacy-overlay');
+            const watermark = document.getElementById('watermark-layer');
+            const protectedElements = document.querySelectorAll('nav, header, section, footer');
+
+            // Use requestAnimationFrame for fastest possible UI response
+            requestAnimationFrame(() => {
+                if (enable) {
+                    overlay.style.display = 'flex';
+                    watermark.style.display = 'block';
+                    protectedElements.forEach(el => {
+                        el.style.transition = instant ? 'none' : 'filter 0.3s ease-out';
+                        el.style.filter = 'blur(30px) grayscale(100%) brightness(0.5)';
+                    });
+                    initWatermarks();
+                } else {
+                    overlay.style.display = 'none';
+                    watermark.style.display = 'none';
+                    protectedElements.forEach(el => {
+                        el.style.filter = 'none';
+                    });
+                }
+            });
+        }
+
+        // 3. Shortcuts (keydown for instant reaction)
+        document.addEventListener('keydown', function (e) {
+            // Block Inspection keys silently (no alert to block thread)
+            if (e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+                (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Capture/Snip Detected
+            if (e.key === 'PrintScreen' ||
+                (e.metaKey && e.shiftKey && ['S', '3', '4'].includes(e.key.toLowerCase()))) {
+                setContentProtection(true, true);
+                navigator.clipboard.writeText('PROTECTED_CONTENT');
+            }
+        });
+
+        // 4. Focus & Visibility (The main Snipping Tool deterrent)
+        window.addEventListener('blur', () => setContentProtection(true, true));
+        window.addEventListener('focus', () => setContentProtection(false));
+        document.addEventListener('visibilitychange', () => {
+            setContentProtection(document.hidden, true);
+        });
+
+        // 5. Watermark System (Adds "noise" to prevent clean captures)
+        function initWatermarks() {
+            const container = document.getElementById('watermark-layer');
+            container.innerHTML = '';
+            for (let i = 0; i < 8; i++) {
+                const wm = document.createElement('div');
+                wm.className = 'watermark-text';
+                wm.innerText = 'PROTECTED_CONTENT_ID:JH_03';
+                wm.style.top = Math.random() * 100 + '%';
+                wm.style.left = Math.random() * 100 + '%';
+                wm.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                container.appendChild(wm);
+            }
+        }
+    </script>
+</body>
+
+</html>
